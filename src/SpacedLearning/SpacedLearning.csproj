@@ -6,6 +6,11 @@
     <PackageId>SpacedLearning</PackageId>
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <StartupObject>SpacedLearning.ConsoleApp</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
