@@ -1,7 +1,17 @@
+using Google.Apis.Auth;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Calendar.v3;
+using Google.Apis.Calendar.v3.Data;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Amazon.Lambda.Core;
+using Google.Apis.Auth;
+using System.IO;
 
 [assembly: LambdaSerializerAttribute(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
 namespace SpacedLearning {
@@ -27,6 +37,8 @@ namespace SpacedLearning {
 
 Español: catálogo 
             ");
+            var path = "/Users/danielm/test.ics";
+
             //TODO: Move to IoC
             var io = new SpacedLearningIO();
             SpacedLearning.FibonocciDateGenerator(test.Date)
@@ -40,9 +52,29 @@ Español: catálogo
     }
 
     public class SpacedLearningIO{
-        public void CreateCalendarEvents(IEnumerable<CalendarEventBE> events){
-            //TODO: Async all calendar POSTs
-            throw new NotImplementedException();
+        public string CreateCalendarEvents(IEnumerable<CalendarEventBE> events){
+            var er = events.Single();
+            var startEnd = er.Date.ToString("yyyyMMddTHHmmssZ");
+            var ics = 
+$@"BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+SUMMARY:Spaced Learning for {startEnd}
+DTSTART;TZID=America/Los_Angeles:{startEnd}
+DTEND;TZID=America/Los_Angeles:{startEnd}
+LOCATION:My Mind
+DESCRIPTION:{er.Description}
+STATUS:CONFIRMED
+SEQUENCE:3
+BEGIN:VALARM
+TRIGGER:-PT10M
+DESCRIPTION:Pickup Reminder
+ACTION:DISPLAY
+END:VALARM
+END:VEVENT
+END:VCALENDAR";
+            return ics;
         }
     }
 
